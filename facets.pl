@@ -19,7 +19,7 @@ $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
 my $configFile='/exlibris/aleph/u22_1/osu01/tab/osu_facets'; 
 
 
-
+#RC1 20200520 - set limit of records for calling x-server API. If thousands of records are retrieved by present function, it can overload Oracle. The limit was set to 2000 recs, the same as later when sql query is formulated
 
 
 my $tmpDir='./tmp'; #this dir. is used for storing files with results - these are taken when user lists through results in OPAC, instead of repeated queting API and database.
@@ -80,6 +80,10 @@ else {
 
    #retrieve result records from search set. Present API response can include max. 100 recs., so calling it is divided to more https than
    my @resultSet;
+   
+   #RC1
+   if ( $noOfRecs > 2000 ) {  run_exemption('Sorry, facets cannot be searched for more than 2000 results. It would be horribly slow.'); }
+   
    for ( my $i=0; $i < $noOfRecs; $i=$i+100 ) {
       if ( $i > $noOfRecs ) { $i=$noOfRecs; }
       my $presentRequest = LWP::UserAgent->new;
